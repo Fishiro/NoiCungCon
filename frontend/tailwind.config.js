@@ -22,7 +22,8 @@ export default {
                 xl: "58px",
             },
             fontFamily: {
-                sans: ["Inter", "sans-serif"],
+                // Thay thế font Inter cũ bằng Google Sans Flex làm font mặc định
+                sans: ['"Google Sans Flex"', "sans-serif"],
             },
         },
     },

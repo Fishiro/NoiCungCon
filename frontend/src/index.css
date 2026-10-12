@@ -1,2 +1,11 @@
 @import "tailwindcss";
 @config "../tailwind.config.js";
+
+body {
+    font-optical-sizing: auto;
+    font-variation-settings:
+        "slnt" 0,
+        "wdth" 100,
+        "GRAD" 0,
+        "ROND" 0;
+}

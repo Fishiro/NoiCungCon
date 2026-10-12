@@ -58,7 +58,7 @@ export default function AIConsultation() {
             {/* Vùng Header của khung Chat */}
             <div className="bg-slate-50 border-b border-slate-200 p-4 text-center">
                 <h2 className="text-[16px] font-bold text-dark">
-                    Chuyên gia AI Hỗ Trợ
+                    Chuyên gia AI trị liệu ngôn ngữ
                 </h2>
                 <p className="text-[12px] text-muted">Phản hồi ngay lập tức</p>
             </div>

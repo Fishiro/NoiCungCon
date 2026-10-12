@@ -2,4 +2,5 @@ flask
 flask-cors 
 python-dotenv 
 requests 
-git+https://github.com/PrimeevolutionZ/apikeyrotator.git 
+git+https://github.com/PrimeevolutionZ/apikeyrotator.git
+python-docx

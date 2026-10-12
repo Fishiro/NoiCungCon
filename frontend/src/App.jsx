@@ -1,3 +1,4 @@
+// src_code/frontend/src/App.jsx
 import { useState } from "react";
 import AIConsultation from "./components/AIConsultation";
 import BookStore from "./components/BookStore";
@@ -37,25 +38,15 @@ export default function App() {
                 </div>
             </nav>
 
-            {/* Banner Responsive Thu Nhỏ - Tối ưu hóa không gian */}
-            <div
-                className="w-full relative flex items-center justify-center overflow-hidden bg-cover bg-center py-4 md:py-6 border-b border-slate-200"
-                style={{
-                    backgroundImage: "url('/images/hinh_trang_web/1.jpg')",
-                }}
-            >
-                {/* Lớp nền mờ trắng giúp tăng độ tương phản đọc chữ */}
-                <div className="absolute inset-0 bg-white/80 backdrop-blur-[2px]"></div>
-
-                {/* Nội dung Banner */}
-                <div className="text-center z-10 px-4 max-w-3xl mx-auto">
-                    <h1 className="text-[15px] md:text-[22px] font-bold text-dark mb-0.5 tracking-tight drop-shadow-sm">
-                        Đồng Hành Cùng Trẻ Chậm Nói
-                    </h1>
-                    <p className="text-[11px] md:text-[14px] text-muted font-medium">
-                        Giải pháp đánh giá và can thiệp sớm tại nhà
-                    </p>
-                </div>
+            {/* Banner hiển thị ảnh (Có giới hạn max-width chống vỡ/phóng to trên màn siêu rộng) */}
+            <div className="w-full bg-slate-100 flex justify-center border-b border-slate-200">
+                <div
+                    className="w-full max-w-[1920px] relative bg-cover bg-center h-[70px] md:h-[110px] lg:h-[140px]"
+                    style={{
+                        backgroundImage:
+                            "url('/images/hinh_trang_web/quytacbanner.jpg')",
+                    }}
+                ></div>
             </div>
 
             {/* Main Content */}
@@ -65,9 +56,9 @@ export default function App() {
                 {activeTab === "survey" && <MchatrSurvey />}
             </main>
 
-            {/* Footer Cải Thiện - Làm rõ thông tin pháp lý & Nhãn hiệu */}
+            {/* Footer - Đã xóa phần "Thông tin pháp lý" */}
             <footer className="bg-dark text-slate-400 py-8 md:py-10 mt-auto border-t border-slate-800">
-                <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+                <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-8 text-center md:text-left">
                     <div>
                         <h3 className="text-surface font-bold text-[18px] mb-3">
                             Nói cùng con.
@@ -77,37 +68,6 @@ export default function App() {
                             sâu, đồng hành cùng ba mẹ trên chặng đường phát
                             triển ngôn ngữ của trẻ.
                         </p>
-                    </div>
-                    <div>
-                        <h3 className="text-surface font-bold text-[16px] mb-3">
-                            Thông tin pháp lý
-                        </h3>
-                        <ul className="text-[13px] space-y-2">
-                            <li>
-                                <a
-                                    href="#"
-                                    className="hover:text-surface transition-colors"
-                                >
-                                    Về chúng tôi & Kiểm duyệt
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    href="#"
-                                    className="hover:text-surface transition-colors"
-                                >
-                                    Chính sách bảo vệ sở hữu trí tuệ
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    href="#"
-                                    className="hover:text-surface transition-colors"
-                                >
-                                    Điều khoản bảo mật thông tin
-                                </a>
-                            </li>
-                        </ul>
                     </div>
                     <div>
                         <h3 className="text-surface font-bold text-[16px] mb-3">
@@ -126,27 +86,45 @@ export default function App() {
                 </div>
             </footer>
 
-            {/* Bottom Navigation (Mobile) */}
+            {/* Bottom Navigation (Mobile) - Sử dụng Solid SVG Icons */}
             <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-surface border-t border-muted/20 z-50 flex justify-around items-center h-[70px] px-2 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
                 <button
                     onClick={() => setActiveTab("ai")}
                     className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${activeTab === "ai" ? "text-primary" : "text-muted"}`}
                 >
-                    <span className="text-[18px] leading-none">💬</span>
+                    <svg
+                        className="w-[22px] h-[22px]"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
+                    </svg>
                     <span className="text-[11px] font-bold">AI Tư vấn</span>
                 </button>
                 <button
                     onClick={() => setActiveTab("books")}
                     className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${activeTab === "books" ? "text-primary" : "text-muted"}`}
                 >
-                    <span className="text-[18px] leading-none">📚</span>
+                    <svg
+                        className="w-[22px] h-[22px]"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z" />
+                    </svg>
                     <span className="text-[11px] font-bold">Thẻ Học</span>
                 </button>
                 <button
                     onClick={() => setActiveTab("survey")}
                     className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${activeTab === "survey" ? "text-accent" : "text-muted"}`}
                 >
-                    <span className="text-[18px] leading-none">📝</span>
+                    <svg
+                        className="w-[22px] h-[22px]"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
+                    </svg>
                     <span className="text-[11px] font-bold">M-CHAT-R</span>
                 </button>
             </nav>
