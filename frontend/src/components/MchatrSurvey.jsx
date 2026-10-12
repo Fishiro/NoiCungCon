@@ -402,7 +402,17 @@ export default function MchatrSurvey() {
             };
 
             const safeName = formatFileName(userInfo.childName);
-            const fileName = `Ketquadanhgiacuachau${safeName}.doc`;
+
+            // Lấy thời gian hiện tại theo giờ địa phương
+            const now = new Date();
+            const d = String(now.getDate()).padStart(2, "0");
+            const m = String(now.getMonth() + 1).padStart(2, "0"); // Tháng trong JS bắt đầu từ 0
+            const y = now.getFullYear();
+            const h = String(now.getHours()).padStart(2, "0");
+            const min = String(now.getMinutes()).padStart(2, "0");
+            const currentDateForFile = `${d}${m}${y}_${h}${min}`;
+
+            const fileName = `Ketquadanhgiacuachau${safeName}_${currentDateForFile}.doc`;
 
             const blob = new Blob(["\ufeff", htmlContent], {
                 type: "application/msword",
