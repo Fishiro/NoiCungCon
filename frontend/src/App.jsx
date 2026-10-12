@@ -8,10 +8,10 @@ export default function App() {
     const [activeTab, setActiveTab] = useState("ai");
 
     return (
-        <div className="min-h-screen bg-slate-50 font-sans pb-[70px] md:pb-0 flex flex-col">
+        <div className="min-h-screen bg-slate-50 font-sans pb-17.5 md:pb-0 flex flex-col">
             {/* Navigation */}
             <nav className="bg-surface shadow-sm sticky top-0 z-50">
-                <div className="max-w-6xl mx-auto px-4 flex justify-between items-center h-[60px] md:h-[70px]">
+                <div className="max-w-6xl mx-auto px-4 flex justify-between items-center h-15 md:h-17.5">
                     <div className="text-[20px] md:text-[24px] font-black text-primary tracking-tight">
                         Nói cùng con.
                     </div>
@@ -41,7 +41,7 @@ export default function App() {
             {/* Banner hiển thị ảnh (Có giới hạn max-width chống vỡ/phóng to trên màn siêu rộng) */}
             <div className="w-full bg-slate-100 flex justify-center border-b border-slate-200">
                 <div
-                    className="w-full max-w-[1920px] relative bg-cover bg-center h-[70px] md:h-[110px] lg:h-[140px]"
+                    className="w-full max-w-480 relative bg-cover bg-center h-17.5 md:h-27.5 lg:h-35"
                     style={{
                         backgroundImage:
                             "url('/images/hinh_trang_web/quytacbanner.jpg')",
@@ -87,13 +87,13 @@ export default function App() {
             </footer>
 
             {/* Bottom Navigation (Mobile) - Sử dụng Solid SVG Icons */}
-            <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-surface border-t border-muted/20 z-50 flex justify-around items-center h-[70px] px-2 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+            <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-surface border-t border-muted/20 z-50 flex justify-around items-center h-17.5 px-2 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
                 <button
                     onClick={() => setActiveTab("ai")}
                     className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${activeTab === "ai" ? "text-primary" : "text-muted"}`}
                 >
                     <svg
-                        className="w-[22px] h-[22px]"
+                        className="w-5.5 h-5.5"
                         fill="currentColor"
                         viewBox="0 0 24 24"
                     >
@@ -106,7 +106,7 @@ export default function App() {
                     className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${activeTab === "books" ? "text-primary" : "text-muted"}`}
                 >
                     <svg
-                        className="w-[22px] h-[22px]"
+                        className="w-5.5 h-5.5"
                         fill="currentColor"
                         viewBox="0 0 24 24"
                     >
@@ -119,7 +119,7 @@ export default function App() {
                     className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${activeTab === "survey" ? "text-accent" : "text-muted"}`}
                 >
                     <svg
-                        className="w-[22px] h-[22px]"
+                        className="w-5.5 h-5.5"
                         fill="currentColor"
                         viewBox="0 0 24 24"
                     >

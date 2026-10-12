@@ -151,10 +151,10 @@ export default function BookStore() {
                         className="bg-white flex flex-col sm:flex-row rounded-2xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition-shadow group"
                     >
                         <div
-                            className={`relative w-full sm:w-[220px] md:w-[260px] shrink-0 border-b sm:border-b-0 sm:border-r border-slate-100 bg-slate-50 overflow-hidden ${product.id === "combo" ? "" : "flex items-center justify-center p-4"}`}
+                            className={`relative w-full sm:w-55 md:w-65 shrink-0 border-b sm:border-b-0 sm:border-r border-slate-100 bg-slate-50 overflow-hidden ${product.id === "combo" ? "" : "flex items-center justify-center p-4"}`}
                         >
                             {product.id === "combo" && product.images ? (
-                                <div className="w-full aspect-[4/3] sm:h-full flex group/combo cursor-pointer bg-slate-200">
+                                <div className="w-full aspect-4/3 sm:h-full flex group/combo cursor-pointer bg-slate-200">
                                     {product.images.map((img, idx) => (
                                         <div
                                             key={idx}
@@ -171,7 +171,7 @@ export default function BookStore() {
                                 <img
                                     src={product.img}
                                     alt={product.title}
-                                    className="w-full aspect-[4/3] object-contain group-hover:scale-105 transition-transform duration-300 drop-shadow-sm"
+                                    className="w-full aspect-4/3 object-contain group-hover:scale-105 transition-transform duration-300 drop-shadow-sm"
                                 />
                             )}
 

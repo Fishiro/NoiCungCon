@@ -1,6 +1,6 @@
-flask 
-flask-cors 
-python-dotenv 
-requests 
-git+https://github.com/PrimeevolutionZ/apikeyrotator.git
+flask
+flask-cors
+python-dotenv
 python-docx
+gunicorn
+google-genai

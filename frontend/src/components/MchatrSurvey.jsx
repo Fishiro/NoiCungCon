@@ -31,7 +31,7 @@ export default function MchatrSurvey() {
         try {
             const saved = localStorage.getItem("mchatr_history");
             return saved ? JSON.parse(saved) : [];
-        } catch (e) {
+        } catch {
             return [];
         }
     });
@@ -297,7 +297,7 @@ export default function MchatrSurvey() {
             });
 
             // Xác định mức độ nguy cơ để in ra file
-            let riskTitleFile = "";
+            let riskTitleFile;
             if (result.riskLevel === "low") {
                 riskTitleFile = "Nguy cơ thấp";
             } else if (result.riskLevel === "medium") {
@@ -320,7 +320,7 @@ export default function MchatrSurvey() {
                 <body>
                     <h2 style="text-align: center; font-size: 16pt;">KIỂM SÀNG LỌC RỐI LOẠN PHỔ TỰ KỶ Ở TRẺ NHỎ<br/>(KHUNG ĐÁNH GIÁ M-CHAT-R)<br/><span style="font-size: 14pt; font-weight: normal;">(Dành cho trẻ từ 16 đến 30 tháng tuổi)</span></h2>
                     
-                    <p><b>Họ tên trẻ:</b> ${userInfo.childName} &nbsp;&nbsp;&nbsp;&nbsp; <b>Nam/Nữ:</b> ${userInfo.gender}</p>
+                    <p><b>Họ tên trẻ:</b> ${userInfo.childName} &nbsp;&nbsp;&nbsp;&nbsp; <b>Giới tính (Nam/Nữ):</b> ${userInfo.gender}</p>
                     <p><b>Ngày sinh:</b> ${userInfo.dob} &nbsp;&nbsp;&nbsp;&nbsp; <b>Tuổi:</b> ${userInfo.age} tháng</p>
                     <p><b>Địa chỉ:</b> ${userInfo.address || "................................................................"}</p>
                     <p><b>Ngày đánh giá:</b> ${currentDateVN}</p>
@@ -429,11 +429,146 @@ export default function MchatrSurvey() {
     // ==========================================
     if (step === "info") {
         return (
-            <div className="max-w-2xl mx-auto">
-                <div className="bg-white px-6 py-8 md:p-10 rounded-2xl shadow-sm border border-slate-200">
+            <div className="max-w-6xl mx-auto flex flex-col-reverse lg:flex-row gap-6 lg:gap-8 items-start">
+                {/* CỘT TRÁI: LỊCH SỬ ĐÁNH GIÁ */}
+                <div className="w-full lg:w-[40%] flex flex-col gap-4">
+                    {history.length > 0 ? (
+                        <div className="bg-white lg:bg-slate-50 p-0 lg:p-6 rounded-2xl lg:border border-slate-200 h-full">
+                            <div className="flex justify-between items-center mb-5 px-2 lg:px-0">
+                                <h3 className="text-[16px] md:text-[18px] font-bold text-slate-900">
+                                    Lịch sử đánh giá
+                                </h3>
+                                <button
+                                    onClick={() => {
+                                        if (
+                                            window.confirm(
+                                                "Bạn có chắc muốn xóa toàn bộ lịch sử?",
+                                            )
+                                        ) {
+                                            setHistory([]);
+                                            localStorage.removeItem(
+                                                "mchatr_history",
+                                            );
+                                        }
+                                    }}
+                                    className="text-[13px] font-medium text-slate-500 hover:text-red-600 transition-colors"
+                                >
+                                    Xóa tất cả
+                                </button>
+                            </div>
+
+                            <div className="space-y-3 max-h-[600px] overflow-y-auto pr-1">
+                                {history.map((item) => (
+                                    <div
+                                        key={item.id}
+                                        className="p-4 bg-white border border-slate-200 rounded-xl shadow-sm flex flex-col gap-3"
+                                    >
+                                        <div className="flex justify-between items-start">
+                                            <div>
+                                                <p className="font-bold text-[15px] text-slate-900 mb-0.5">
+                                                    Bé:{" "}
+                                                    {item.userInfo.childName}
+                                                </p>
+                                                <p className="text-[12px] text-slate-500">
+                                                    {item.date} •{" "}
+                                                    {item.userInfo.age} tháng
+                                                    tuổi
+                                                </p>
+                                            </div>
+                                            <div className="text-right">
+                                                <p className="font-bold text-[16px] text-slate-900">
+                                                    {item.result.score} / 20
+                                                </p>
+                                                <p
+                                                    className={`inline-block mt-1 text-[11px] font-bold px-2 py-0.5 rounded ${item.result.riskLevel === "low" ? "bg-green-100 text-green-700" : item.result.riskLevel === "medium" ? "bg-yellow-100 text-yellow-800" : "bg-red-100 text-red-700"}`}
+                                                >
+                                                    {item.result.riskLevel ===
+                                                    "low"
+                                                        ? "Nguy cơ thấp"
+                                                        : item.result
+                                                                .riskLevel ===
+                                                            "medium"
+                                                          ? "Nguy cơ trung bình"
+                                                          : "Nguy cơ cao"}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-2 mt-1">
+                                            <button
+                                                onClick={() => {
+                                                    setUserInfo(item.userInfo);
+                                                    if (item.userInfo.dob) {
+                                                        const [y, m, d] =
+                                                            item.userInfo.dob.split(
+                                                                "-",
+                                                            );
+                                                        setDob({
+                                                            day: d,
+                                                            month: m,
+                                                            year: y,
+                                                        });
+                                                    }
+                                                    setAnswers(item.answers);
+                                                    setResult(item.result);
+                                                    setStep("result");
+                                                }}
+                                                className="flex-1 py-2 bg-slate-100 text-slate-800 border border-slate-200 text-[13px] font-bold rounded-lg hover:bg-slate-200 transition-colors"
+                                            >
+                                                Xem lại
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    const newHistory =
+                                                        history.filter(
+                                                            (h) =>
+                                                                h.id !==
+                                                                item.id,
+                                                        );
+                                                    setHistory(newHistory);
+                                                    localStorage.setItem(
+                                                        "mchatr_history",
+                                                        JSON.stringify(
+                                                            newHistory,
+                                                        ),
+                                                    );
+                                                }}
+                                                className="px-3 py-2 text-slate-400 hover:text-red-500 transition-colors bg-white border border-slate-200 rounded-lg"
+                                                title="Xóa bài test này"
+                                            >
+                                                ✕
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="hidden lg:flex flex-col items-center justify-center h-full min-h-[500px] bg-slate-50 border border-slate-200 border-dashed rounded-2xl text-slate-400">
+                            <svg
+                                className="w-12 h-12 mb-3 text-slate-300"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="1.5"
+                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+                                ></path>
+                            </svg>
+                            <p className="text-[14px] font-medium">
+                                Chưa có lịch sử đánh giá
+                            </p>
+                        </div>
+                    )}
+                </div>
+
+                {/* CỘT PHẢI: FORM ĐIỀN THÔNG TIN */}
+                <div className="w-full lg:w-[60%] bg-white px-6 py-8 md:p-10 rounded-2xl shadow-sm border border-slate-200">
                     <div className="text-center mb-6">
                         <h2 className="text-[20px] md:text-sub font-black text-slate-900">
-                            Thông Tin Đánh Giá
+                            Nhập Thông Tin Đánh Giá
                         </h2>
                         <p className="text-[13px] text-slate-600 font-semibold mt-1">
                             Dành cho trẻ từ 16 đến 30 tháng tuổi
@@ -452,10 +587,8 @@ export default function MchatrSurvey() {
                             20 câu hỏi đơn giản
                         </span>
                         , giúp cha mẹ và người chăm sóc nhận diện các dấu hiệu
-                        tự kỷ. M-CHAT-R được phát triển bởi Tiến sĩ Diana Robins
-                        và cộng sự, và hiện được sử dụng rộng rãi trên toàn thế
-                        giới. Mục đích của M-CHAT-R là phát hiện sớm nguy cơ rối
-                        loạn tự kỷ để có thể can thiệp kịp thời và hiệu quả.
+                        tự kỷ. Mục đích của M-CHAT-R là phát hiện sớm nguy cơ
+                        rối loạn tự kỷ để có thể can thiệp kịp thời và hiệu quả.
                     </div>
 
                     <form onSubmit={startSurvey} className="space-y-5">
@@ -506,7 +639,7 @@ export default function MchatrSurvey() {
                                                 e.target.value,
                                             )
                                         }
-                                        className="w-full min-w-[40px] p-1.5 text-center text-slate-900 outline-none bg-transparent placeholder-slate-400 font-medium"
+                                        className="w-full min-w-10 p-1.5 text-center text-slate-900 outline-none bg-transparent placeholder-slate-400"
                                         placeholder="Ngày"
                                     />
                                     <span className="text-slate-400 font-light text-[18px]">
@@ -522,7 +655,7 @@ export default function MchatrSurvey() {
                                                 e.target.value,
                                             )
                                         }
-                                        className="w-full min-w-[40px] p-1.5 text-center text-slate-900 outline-none bg-transparent placeholder-slate-400 font-medium"
+                                        className="w-full min-w-10 p-1.5 text-center text-slate-900 outline-none bg-transparent placeholder-slate-400"
                                         placeholder="Tháng"
                                     />
                                     <span className="text-slate-400 font-light text-[18px]">
@@ -538,7 +671,7 @@ export default function MchatrSurvey() {
                                                 e.target.value,
                                             )
                                         }
-                                        className="w-full min-w-[60px] p-1.5 text-center text-slate-900 outline-none bg-transparent placeholder-slate-400 font-medium"
+                                        className="w-full min-w-15 p-1.5 text-center text-slate-900 outline-none bg-transparent placeholder-slate-400"
                                         placeholder="Năm"
                                     />
                                 </div>
@@ -648,113 +781,6 @@ export default function MchatrSurvey() {
                         </button>
                     </form>
                 </div>
-
-                {/* KHU VỰC LỊCH SỬ ĐÁNH GIÁ (Render khi có dữ liệu) */}
-                {history.length > 0 && (
-                    <div className="mt-8 pt-8">
-                        <div className="flex justify-between items-center mb-5 px-2">
-                            <h3 className="text-[16px] md:text-[18px] font-bold text-slate-900">
-                                Lịch sử đánh giá
-                            </h3>
-                            <button
-                                onClick={() => {
-                                    if (
-                                        window.confirm(
-                                            "Bạn có chắc muốn xóa toàn bộ lịch sử?",
-                                        )
-                                    ) {
-                                        setHistory([]);
-                                        localStorage.removeItem(
-                                            "mchatr_history",
-                                        );
-                                    }
-                                }}
-                                className="text-[13px] font-medium text-slate-500 hover:text-red-600 transition-colors"
-                            >
-                                Xóa tất cả
-                            </button>
-                        </div>
-
-                        <div className="space-y-3">
-                            {history.map((item) => (
-                                <div
-                                    key={item.id}
-                                    className="p-4 md:px-6 bg-white border border-slate-200 rounded-2xl shadow-sm flex flex-col sm:flex-row justify-between sm:items-center gap-4"
-                                >
-                                    <div>
-                                        <p className="font-bold text-[15px] text-slate-900 mb-0.5">
-                                            Bé: {item.userInfo.childName}
-                                        </p>
-                                        <p className="text-[12px] text-slate-500">
-                                            {item.date} • {item.userInfo.age}{" "}
-                                            tháng tuổi
-                                        </p>
-                                    </div>
-                                    <div className="flex items-center justify-between sm:justify-end gap-5 w-full sm:w-auto">
-                                        <div className="text-left sm:text-right">
-                                            <p className="font-bold text-[16px] text-slate-900">
-                                                {item.result.score} / 20 điểm
-                                            </p>
-                                            <p className="text-[12px] text-slate-600 font-medium">
-                                                {item.result.riskLevel === "low"
-                                                    ? "Nguy cơ thấp"
-                                                    : item.result.riskLevel ===
-                                                        "medium"
-                                                      ? "Nguy cơ trung bình"
-                                                      : "Nguy cơ cao"}
-                                            </p>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <button
-                                                onClick={() => {
-                                                    setUserInfo(item.userInfo);
-                                                    if (item.userInfo.dob) {
-                                                        const [y, m, d] =
-                                                            item.userInfo.dob.split(
-                                                                "-",
-                                                            );
-                                                        setDob({
-                                                            day: d,
-                                                            month: m,
-                                                            year: y,
-                                                        });
-                                                    }
-                                                    setAnswers(item.answers);
-                                                    setResult(item.result);
-                                                    setStep("result");
-                                                }}
-                                                className="px-4 py-2 bg-slate-100 text-slate-800 border border-slate-200 text-[13px] font-bold rounded-lg hover:bg-slate-200 transition-colors"
-                                            >
-                                                Xem
-                                            </button>
-                                            <button
-                                                onClick={() => {
-                                                    const newHistory =
-                                                        history.filter(
-                                                            (h) =>
-                                                                h.id !==
-                                                                item.id,
-                                                        );
-                                                    setHistory(newHistory);
-                                                    localStorage.setItem(
-                                                        "mchatr_history",
-                                                        JSON.stringify(
-                                                            newHistory,
-                                                        ),
-                                                    );
-                                                }}
-                                                className="p-2 text-slate-400 hover:text-red-500 transition-colors"
-                                                title="Xóa bài test này"
-                                            >
-                                                ✕
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
             </div>
         );
     }
@@ -765,7 +791,7 @@ export default function MchatrSurvey() {
     if (step === "survey") {
         const progressPercentage = (currentIndex / 20) * 100;
         return (
-            <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-[480px] md:h-[520px]">
+            <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-120 md:h-130">
                 <div className="bg-slate-50 border-b border-slate-200 px-5 md:px-6 py-4 shrink-0">
                     <div className="flex justify-between items-center mb-3">
                         <h2 className="text-[13px] md:text-[14px] font-bold text-slate-600">
@@ -836,8 +862,8 @@ export default function MchatrSurvey() {
     // MÀN HÌNH 3: KẾT QUẢ VÀ KHUNG ĐIỂM
     // ==========================================
     if (step === "result" && result) {
-        let riskTitle = "";
-        let riskColorClass = "";
+        let riskTitle;
+        let riskColorClass;
 
         if (result.riskLevel === "low") {
             riskTitle = "Nguy cơ thấp";
