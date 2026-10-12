@@ -29,7 +29,7 @@ CORS(app, resources={r"/api/*": {"origins": allowed_origins}})
 
 # --- Cau hinh AI: Khởi tạo cấu hình OpenRouter ---
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "").strip()
-AI_MODEL = os.getenv("AI_MODEL", "openai/gpt-4o").strip()
+AI_MODEL = os.getenv("AI_MODEL", "google/gemini-3.1-flash-lite:free").strip()
 SITE_URL = os.getenv("SITE_URL", "http://localhost:5173").strip()
 SITE_NAME = os.getenv("SITE_NAME", "Noi Cung Con").strip()
 
