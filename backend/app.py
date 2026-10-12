@@ -1,6 +1,7 @@
 import io
 import os
 import re
+import requests
 
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -8,10 +9,6 @@ from docx.shared import Pt
 from dotenv import load_dotenv
 from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
-
-# Thêm thư viện SDK mới của Google
-from google import genai
-from google.genai import types
 
 # =========================================================
 # 1. KHOI TAO UNG DUNG
@@ -30,14 +27,11 @@ allowed_origins = [
 
 CORS(app, resources={r"/api/*": {"origins": allowed_origins}})
 
-# --- Cau hinh AI: Khởi tạo Client Gemini ---
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY", "").strip()
-AI_MODEL = os.getenv("AI_MODEL", "gemini-2.5-flash").strip()
-
-# Khởi tạo Client theo chuẩn SDK mới
-gemini_client = None
-if GOOGLE_API_KEY:
-    gemini_client = genai.Client(api_key=GOOGLE_API_KEY)
+# --- Cau hinh AI: Khởi tạo cấu hình OpenRouter ---
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "").strip()
+AI_MODEL = os.getenv("AI_MODEL", "openai/gpt-4o").strip()
+SITE_URL = os.getenv("SITE_URL", "http://localhost:5173").strip()
+SITE_NAME = os.getenv("SITE_NAME", "Noi Cung Con").strip()
 
 SYSTEM_PROMPT = (
     "Bạn là một chuyên gia trị liệu ngôn ngữ trẻ em. Hãy xưng hô và tư vấn với phong thái "
@@ -56,7 +50,7 @@ SYSTEM_PROMPT = (
     "Tuyệt đối không trả lời các câu hỏi ngoài phạm vi này.\n"
     "2. Không chẩn đoán y khoa: Tuyệt đối không chẩn đoán bệnh. Khi có bất kỳ dấu hiệu nào đáng lo ngại, "
     "hãy khuyên ba mẹ đưa trẻ đi gặp bác sĩ hoặc chuyên gia trực tiếp.\n"
-    "3. Giới hạn độ dài: Câu trả lời phải cực kỳ ngắn gọn, cô đọng (dưới 100 chữ / 100 tokens). "
+    "3. Giới hạn độ dài: Câu trả lời phải cực kỳ ngắn gọn, cô đọng (dưới 100 chữ). "
     "Bạn phải tự căn chỉnh nội dung để câu trả lời kết thúc trọn vẹn, tuyệt đối không được để tình trạng đang nói bị cắt ngang câu.\n"
     "4. Được phép format câu trả lời theo dạng dễ đọc nhưng không được sử dụng markdown, không dùng ký tự đặc biệt."
 )
@@ -71,7 +65,7 @@ def health():
     return jsonify({"status": "ok"}), 200
 
 # =========================================================
-# 3. API CHAT AI (Sử dụng google-genai)
+# 3. API CHAT AI (Sử dụng OpenRouter)
 # =========================================================
 
 
@@ -87,23 +81,49 @@ def chat():
     if not isinstance(message, str) or not message.strip():
         return jsonify({"error": "Vui lòng nhập nội dung cần tư vấn."}), 400
 
-    if not gemini_client:
-        return jsonify({"error": "Backend chưa được cấu hình GOOGLE_API_KEY."}), 503
+    if not OPENROUTER_API_KEY:
+        return jsonify({"error": "Backend chưa được cấu hình OPENROUTER_API_KEY."}), 503
 
     try:
-        # Gọi API qua SDK google-genai
-        response = gemini_client.models.generate_content(
-            model=AI_MODEL,
-            contents=message.strip(),
-            config=types.GenerateContentConfig(
-                system_instruction=SYSTEM_PROMPT,
-                max_output_tokens=120,  # Giới hạn cứng số token trả về
-            )
+        headers = {
+            "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+            "HTTP-Referer": SITE_URL,
+            "X-Title": SITE_NAME,
+            "Content-Type": "application/json",
+        }
+
+        payload = {
+            "model": AI_MODEL,
+            "messages": [
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": message.strip()}
+            ],
+            "max_tokens": 120  # Giới hạn số token trả về giống với src cũ
+        }
+
+        # Gọi API OpenRouter
+        response = requests.post(
+            "https://openrouter.ai/api/v1/chat/completions",
+            headers=headers,
+            json=payload,
+            timeout=30
         )
 
-        ai_reply = response.text if response.text else ""
+        if not response.ok:
+            error_data = response.json()
+            app.logger.error(f"OpenRouter API Error: {error_data}")
 
-        # Trả về format giả lập cấu trúc Chat Completions của OpenAI
+            error_str = str(error_data).lower()
+            if "429" in error_str or "quota" in error_str or "rate limit" in error_str:
+                return jsonify({"error": "Hệ thống đang quá tải, vui lòng thử lại sau ít phút."}), 429
+
+            return jsonify({"error": "Lỗi kết nối đến dịch vụ AI."}), 502
+
+        response_data = response.json()
+        ai_reply = response_data.get("choices", [{}])[0].get(
+            "message", {}).get("content", "")
+
+        # Trả về theo cấu trúc cũ mà Frontend đang sử dụng
         return jsonify({
             "choices": [
                 {
@@ -115,12 +135,7 @@ def chat():
         }), 200
 
     except Exception as exc:
-        app.logger.exception("Lỗi khi gọi API tư vấn AI (SDK)")
-        error_str = str(exc).lower()
-
-        if "429" in error_str or "quota" in error_str:
-            return jsonify({"error": "Hệ thống đang quá tải, vui lòng thử lại sau ít phút."}), 429
-
+        app.logger.exception("Lỗi khi gọi API tư vấn AI (OpenRouter)")
         return jsonify({"error": "Không thể xử lý yêu cầu tư vấn lúc này."}), 502
 
 # =========================================================

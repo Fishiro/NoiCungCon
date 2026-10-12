@@ -72,8 +72,7 @@ export default function AIConsultation() {
                 throw new Error("AI chưa trả về nội dung. Vui lòng thử lại.");
             }
 
-            // Đây là phần bản cũ còn thiếu:
-            // đưa câu trả lời AI vào danh sách tin nhắn.
+            // Đưa câu trả lời AI vào danh sách tin nhắn.
             setMessages((previous) => [
                 ...previous,
                 {
@@ -121,7 +120,7 @@ export default function AIConsultation() {
                 <p className="text-[12px] text-muted">
                     {isSending
                         ? "Đang xử lý câu hỏi..."
-                        : "Phản hồi ngay lập tức"}
+                        : "Mời ba mẹ nhập câu hỏi."}
                 </p>
             </div>
 
@@ -161,27 +160,42 @@ export default function AIConsultation() {
                 )}
             </div>
 
-            {/* Khu vực nhập tin nhắn */}
-            <div className="p-3 bg-white border-t border-slate-200 flex gap-2 items-end">
-                <textarea
-                    value={input}
-                    onChange={(event) => setInput(event.target.value)}
-                    onKeyDown={handleKeyDown}
-                    disabled={isSending}
-                    className="flex-1 max-h-30 min-h-11 p-3 bg-slate-100 border border-transparent rounded-lg text-body focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 resize-none outline-none transition-all disabled:opacity-60"
-                    placeholder="Nhập câu hỏi của ba mẹ..."
-                    rows={1}
-                    aria-label="Nhập câu hỏi tư vấn"
-                />
+            {/* Khu vực nhập tin nhắn và Cảnh báo */}
+            <div className="bg-white border-t border-slate-200 flex flex-col">
+                <div className="p-3 flex gap-2 items-end">
+                    <textarea
+                        value={input}
+                        onChange={(event) => setInput(event.target.value)}
+                        onKeyDown={handleKeyDown}
+                        disabled={isSending}
+                        className="flex-1 max-h-30 min-h-11 p-3 bg-slate-100 border border-transparent rounded-lg text-body focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 resize-none outline-none transition-all disabled:opacity-60"
+                        placeholder="Nhập câu hỏi của ba mẹ..."
+                        rows={1}
+                        aria-label="Nhập câu hỏi tư vấn"
+                    />
 
-                <button
-                    type="button"
-                    onClick={handleSend}
-                    disabled={!input.trim() || isSending}
-                    className="h-11 px-5 bg-accent text-surface font-bold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-orange-600 active:scale-95 transition-all flex items-center justify-center"
-                >
-                    {isSending ? "Đang gửi..." : "Gửi"}
-                </button>
+                    <button
+                        type="button"
+                        onClick={handleSend}
+                        disabled={!input.trim() || isSending}
+                        className="h-11 px-5 bg-accent text-surface font-bold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-orange-600 active:scale-95 transition-all flex items-center justify-center"
+                    >
+                        {isSending ? "Đang gửi..." : "Gửi"}
+                    </button>
+                </div>
+
+                {/* Dòng cảnh báo miễn trừ trách nhiệm pháp lý */}
+                <div className="px-4 pb-3 text-center">
+                    <p className="text-[11px] text-slate-500 leading-tight">
+                        <span className="font-semibold text-slate-700">
+                            Lưu ý:
+                        </span>{" "}
+                        Trợ lý AI có thể cung cấp thông tin chưa chính xác. Nội
+                        dung tư vấn chỉ mang tính chất tham khảo tại nhà. Vui
+                        lòng luôn tham vấn trực tiếp bác sĩ hoặc chuyên gia y tế
+                        để có chẩn đoán chính xác nhất.
+                    </p>
+                </div>
             </div>
         </div>
     );
