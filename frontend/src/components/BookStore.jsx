@@ -24,18 +24,18 @@ export default function BookStore() {
         {
             id: 1,
             type: "single",
-            title: "Quyển 1: Gia đình & Bản thân",
+            title: "Quyển 1: Động vật quanh em",
             price: "450.000đ",
             img: "/images/bia_sach/quyen1.jpg",
-            desc: "Chủ đề gần gũi giúp bé nhận biết các thành viên trong gia đình và các bộ phận trên cơ thể.",
+            desc: "Khám phá thế giới động vật sinh động qua hình ảnh 3D hoạt hình AI, kích thích sự tò mò của bé.",
         },
         {
             id: 2,
             type: "single",
-            title: "Quyển 2: Động vật quanh em",
+            title: "Quyển 2: Đồ dùng gia đình",
             price: "450.000đ",
             img: "/images/bia_sach/quyen2.jpg",
-            desc: "Khám phá thế giới động vật sinh động qua hình ảnh 3D hoạt hình AI, kích thích sự tò mò của trẻ.",
+            desc: "Chủ đề gần gũi giúp bé làm quen và nhận biết tên gọi, hình dáng của các vật dụng quen thuộc trong không gian sống của gia đình.",
         },
         {
             id: 3,
