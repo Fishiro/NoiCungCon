@@ -1,7 +1,6 @@
 import io
 import os
 import re
-import requests
 
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -9,6 +8,9 @@ from docx.shared import Pt
 from dotenv import load_dotenv
 from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
+from google import genai
+from google.genai import types
+
 
 # =========================================================
 # 1. KHOI TAO UNG DUNG
@@ -27,11 +29,11 @@ allowed_origins = [
 
 CORS(app, resources={r"/api/*": {"origins": allowed_origins}})
 
-# --- Cau hinh AI: Khởi tạo cấu hình OpenRouter ---
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "").strip()
-AI_MODEL = os.getenv("AI_MODEL", "openrouter/free").strip()
-SITE_URL = os.getenv("SITE_URL", "http://localhost:5173").strip()
-SITE_NAME = os.getenv("SITE_NAME", "Noi Cung Con").strip()
+# --- Cau hinh AI: Khoi tao cau hinh Gemini ---
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY", "").strip()
+AI_MODEL = os.getenv("AI_MODEL", "gemini-3.1-flash-lite").strip()
+
+client = genai.Client(api_key=GOOGLE_API_KEY) if GOOGLE_API_KEY else None
 
 SYSTEM_PROMPT = (
     "Bạn là một chuyên gia trị liệu ngôn ngữ trẻ em. Hãy xưng hô và tư vấn với phong thái "
@@ -65,7 +67,7 @@ def health():
     return jsonify({"status": "ok"}), 200
 
 # =========================================================
-# 3. API CHAT AI (Sử dụng OpenRouter)
+# 3. API CHAT AI (Su dung Gemini API)
 # =========================================================
 
 
@@ -81,47 +83,21 @@ def chat():
     if not isinstance(message, str) or not message.strip():
         return jsonify({"error": "Vui lòng nhập nội dung cần tư vấn."}), 400
 
-    if not OPENROUTER_API_KEY:
-        return jsonify({"error": "Backend chưa được cấu hình OPENROUTER_API_KEY."}), 503
+    if not GOOGLE_API_KEY or client is None:
+        return jsonify({"error": "Backend chưa được cấu hình GOOGLE_API_KEY."}), 503
 
     try:
-        headers = {
-            "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-            "HTTP-Referer": SITE_URL,
-            "X-Title": SITE_NAME,
-            "Content-Type": "application/json",
-        }
-
-        payload = {
-            "model": AI_MODEL,
-            "messages": [
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": message.strip()}
-            ],
-            "max_tokens": 120  # Giới hạn số token trả về giống với src cũ
-        }
-
-        # Gọi API OpenRouter
-        response = requests.post(
-            "https://openrouter.ai/api/v1/chat/completions",
-            headers=headers,
-            json=payload,
-            timeout=30
+        response = client.models.generate_content(
+            model=AI_MODEL,
+            contents=message.strip(),
+            config=types.GenerateContentConfig(
+                system_instruction=SYSTEM_PROMPT,
+                max_output_tokens=200,  # Giới hạn token đầu ra
+                temperature=0.7,
+            ),
         )
 
-        if not response.ok:
-            error_data = response.json()
-            app.logger.error(f"OpenRouter API Error: {error_data}")
-
-            error_str = str(error_data).lower()
-            if "429" in error_str or "quota" in error_str or "rate limit" in error_str:
-                return jsonify({"error": "Hệ thống đang quá tải, vui lòng thử lại sau ít phút."}), 429
-
-            return jsonify({"error": "Lỗi kết nối đến dịch vụ AI."}), 502
-
-        response_data = response.json()
-        ai_reply = response_data.get("choices", [{}])[0].get(
-            "message", {}).get("content", "")
+        ai_reply = (response.text or "").strip()
 
         # Trả về theo cấu trúc cũ mà Frontend đang sử dụng
         return jsonify({
@@ -135,7 +111,11 @@ def chat():
         }), 200
 
     except Exception as exc:
-        app.logger.exception("Lỗi khi gọi API tư vấn AI (OpenRouter)")
+        app.logger.exception("Lỗi khi gọi API tư vấn AI (Gemini)")
+        error_str = str(exc).lower()
+        if "429" in error_str or "quota" in error_str or "rate limit" in error_str:
+            return jsonify({"error": "Hệ thống đang quá tải, vui lòng thử lại sau ít phút."}), 429
+
         return jsonify({"error": "Không thể xử lý yêu cầu tư vấn lúc này."}), 502
 
 # =========================================================
@@ -218,7 +198,7 @@ def export_mchatr():
         cells[2].text = "X" if answer is False else ""
 
     heading = doc.add_paragraph()
-    heading.add_run("\nHƯỚNG DẪN CHẤM ĐIỂM VÀ DIỄN GIẢI KẾT QUẢ").bold = True
+    heading.add_run("\nHƯỚNG DẪN CHẤM ĐIỂM VÀ DIễn GIẢI KẾT QUẢ").bold = True
 
     doc.add_paragraph(
         "Lưu ý quan trọng: M-CHAT-R là công cụ sàng lọc, không phải công cụ chẩn đoán "
