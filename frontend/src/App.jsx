@@ -44,7 +44,7 @@ export default function App() {
                     className="w-full max-w-480 relative bg-cover bg-center h-17.5 md:h-27.5 lg:h-35"
                     style={{
                         backgroundImage:
-                            "url('/images/hinh_trang_web/quytacbanner.jpg')",
+                            "url('/images/hinh_trang_web/BANNER.jpg')",
                     }}
                 ></div>
             </div>
