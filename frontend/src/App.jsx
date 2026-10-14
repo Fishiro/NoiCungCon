@@ -38,15 +38,13 @@ export default function App() {
                 </div>
             </nav>
 
-            {/* Banner hiển thị ảnh (Có giới hạn max-width chống vỡ/phóng to trên màn siêu rộng) */}
+            {/* Banner hiển thị ảnh (Giữ nguyên tỷ lệ tự nhiên, không bao giờ bị crop) */}
             <div className="w-full bg-slate-100 flex justify-center border-b border-slate-200">
-                <div
-                    className="w-full max-w-480 relative bg-cover bg-center h-17.5 md:h-27.5 lg:h-35"
-                    style={{
-                        backgroundImage:
-                            "url('/images/hinh_trang_web/BANNER.jpg')",
-                    }}
-                ></div>
+                <img
+                    src="/images/hinh_trang_web/BANNER.jpg"
+                    alt="Banner Nói Cùng Con"
+                    className="w-full max-w-6xl h-auto object-contain block"
+                />
             </div>
 
             {/* Main Content */}
