@@ -388,6 +388,12 @@ export default function MchatrSurvey() {
                             <td style="font-size: 14pt;">Khả năng cao. Cần đánh giá chẩn đoán chuyên sâu, đồng thời đánh giá nhu cầu can thiệp sớm.</td>
                         </tr>
                     </table>
+
+                    <hr/>
+                    <p style="text-align: center; font-size: 10pt; color: #555;">
+                        © 2009 Robins, Fein, &amp; Barton ·
+                        <a href="https://www.mchatscreen.com">www.mchatscreen.com</a>
+                    </p>
                 </body>
                 </html>
             `;
@@ -857,6 +863,17 @@ export default function MchatrSurvey() {
                             style={{ width: `${progressPercentage}%` }}
                         ></div>
                     </div>
+                    <p className="mt-2 text-center text-[10px] md:text-[11px] text-slate-500">
+                        © 2009 Robins, Fein, &amp; Barton ·{" "}
+                        <a
+                            href="https://www.mchatscreen.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-700 hover:underline"
+                        >
+                            www.mchatscreen.com
+                        </a>
+                    </p>
                 </div>
 
                 <div
@@ -1056,6 +1073,18 @@ export default function MchatrSurvey() {
                         </div>
                     </div>
                 </div>
+
+                <p className="text-center text-[11px] md:text-[12px] text-slate-500 px-3">
+                    © 2009 Robins, Fein, &amp; Barton ·{" "}
+                    <a
+                        href="https://www.mchatscreen.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-700 hover:underline"
+                    >
+                        www.mchatscreen.com
+                    </a>
+                </p>
             </div>
         );
     }
