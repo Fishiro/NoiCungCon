@@ -585,20 +585,60 @@ export default function MchatrSurvey() {
                         </p>
                     </div>
 
-                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-8 text-[13px] md:text-[14px] text-slate-700 leading-relaxed text-justify md:text-left">
-                        <span className="font-bold text-slate-900">
-                            M-CHAT-R (Modified Checklist for Autism in Toddlers
-                            – Revised)
-                        </span>{" "}
-                        là công cụ sàng lọc nguy cơ rối loạn phổ tự kỷ (ASD)
-                        dành cho trẻ từ 16 đến 30 tháng tuổi. Công cụ này bao
-                        gồm{" "}
-                        <span className="font-bold text-slate-900">
-                            20 câu hỏi đơn giản
-                        </span>
-                        , giúp cha mẹ và người chăm sóc nhận diện các dấu hiệu
-                        tự kỷ. Mục đích của M-CHAT-R là phát hiện sớm nguy cơ
-                        rối loạn tự kỷ để có thể can thiệp kịp thời và hiệu quả.
+                    {/* GIỚI THIỆU CÔNG CỤ M-CHAT-R */}
+                    <div className="space-y-5 mb-8">
+                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-[13px] md:text-[14px] text-slate-700 leading-relaxed text-justify md:text-left">
+                            <span className="font-bold text-slate-900">
+                                M-CHAT-R (Modified Checklist for Autism in Toddlers
+                                – Revised)
+                            </span>{" "}
+                            là công cụ sàng lọc nguy cơ rối loạn phổ tự kỷ (ASD)
+                            dành cho trẻ từ 16 đến 30 tháng tuổi. Công cụ này bao
+                            gồm{" "}
+                            <span className="font-bold text-slate-900">
+                                20 câu hỏi đơn giản
+                            </span>
+                            , giúp cha mẹ và người chăm sóc nhận diện các dấu hiệu
+                            tự kỷ. Mục đích của M-CHAT-R là phát hiện sớm nguy cơ
+                            rối loạn tự kỷ để có thể can thiệp kịp thời và hiệu quả.
+                        </div>
+                    
+                        {/* CAM KẾT VÀ THÔNG TIN BẢN QUYỀN */}
+                        <div className="bg-white p-4 md:p-5 rounded-xl border border-slate-300 text-[13px] md:text-[14px] text-slate-700 leading-relaxed">
+                            <h3 className="font-bold text-slate-900 text-[15px] md:text-[16px] mb-3">
+                                Cam kết của chúng tôi
+                            </h3>
+                    
+                            <ol className="list-decimal pl-5 space-y-2">
+                                <li>
+                                    Bài sàng lọc luôn miễn phí; không bao giờ được
+                                    bán, cấp phép lại hoặc gắn với điều kiện mua bất
+                                    kỳ sản phẩm, dịch vụ có thu phí nào.
+                                </li>
+                    
+                                <li>
+                                    Chỉ sử dụng cho mục đích lâm sàng, giáo dục
+                                    và cộng đồng, phi thương mại.
+                                </li>
+                    
+                                <li>
+                                    Mọi trang sàng lọc và phiếu kết quả xuất ra đều
+                                    ghi thông báo{" "}
+                                    <span className="font-semibold text-slate-900">
+                                        “© 2009 Robins, Fein, &amp; Barton”
+                                    </span>{" "}
+                                    và đường dẫn đến{" "}
+                                    <a
+                                        href="https://www.mchatscreen.com"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-700 hover:text-blue-800 underline break-all"
+                                    >
+                                        www.mchatscreen.com
+                                    </a>.
+                                </li>
+                            </ol>
+                        </div>
                     </div>
 
                     <form onSubmit={startSurvey} className="space-y-5">
